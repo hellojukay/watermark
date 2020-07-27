@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/jpeg"
@@ -18,10 +19,13 @@ import (
 var file string
 var fontFile string
 var fontBuffer []byte
+var output string
+var fontSize = 24
 
 func init() {
 	flag.StringVar(&file, "img", "", "image file path")
 	flag.StringVar(&fontFile, "font", "Monaco_Linux.ttf", "font file path")
+	flag.StringVar(&output, "w", "", "output file,if not set , watermark prefix will add")
 	flag.Parse()
 	// 必须指定图片
 	if file == "" || fontFile == "" {
@@ -33,6 +37,9 @@ func init() {
 		log.Fatalf("读取字体文件 %s 失败", fontFile)
 	}
 	fontBuffer = bf
+	if output == "" {
+		output = fmt.Sprintf("watermark_%s", file)
+	}
 }
 func main() {
 	fname := file
@@ -58,7 +65,6 @@ func main() {
 		log.Fatalf("无法解析日期 %s\n", v.String())
 	}
 	var txt = t.Format("2006-01-02 15:04:05")
-	println(txt)
 	font, err := freetype.ParseFont(fontBuffer)
 	if err != nil {
 		log.Fatalf("解析字体文件 %s 文件失败，这可能不是一个合法的字体文件,%s\n", fontFile, err)
@@ -79,18 +85,22 @@ func main() {
 	f := freetype.NewContext()
 	f.SetFont(font)
 	f.SetDPI(350)
-	f.SetFontSize(24)
+	f.SetFontSize(float64(fontSize))
 	f.SetClip(jpgimg.Bounds())
 	f.SetDst(img)
 	f.SetSrc(image.NewUniform(color.RGBA{R: 255, G: 0, B: 0, A: 255}))
+	println(fontSize*21, fontSize)
 	pt := freetype.Pt(img.Bounds().Dx()-1400, img.Bounds().Dy()-24)
 	_, err = f.DrawString(txt, pt)
 	// 保存到新的文件中
-	newfile, _ := os.Create("aaa.jpg")
+	newfile, _ := os.Create(output)
 	defer newfile.Close()
 
-	err = jpeg.Encode(newfile, img, &jpeg.Options{100})
+	err = jpeg.Encode(newfile, img, &jpeg.Options{
+		Quality: 100,
+	})
 	if err != nil {
 		log.Fatalf("保存水印文件%s失败%s", newfile, err)
+		os.Exit(1)
 	}
 }
