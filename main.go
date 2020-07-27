@@ -89,7 +89,6 @@ func main() {
 	f.SetClip(jpgimg.Bounds())
 	f.SetDst(img)
 	f.SetSrc(image.NewUniform(color.RGBA{R: 255, G: 0, B: 0, A: 255}))
-	println(fontSize*21, fontSize)
 	pt := freetype.Pt(img.Bounds().Dx()-1400, img.Bounds().Dy()-24)
 	_, err = f.DrawString(txt, pt)
 	// 保存到新的文件中
