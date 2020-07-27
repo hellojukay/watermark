@@ -1,3 +1,4 @@
+//go:generate go-bindata -o=asset.go -pkg=main ./Monaco_Linux.ttf
 package main
 
 import (
@@ -24,21 +25,29 @@ var fontSize = 24
 
 func init() {
 	flag.StringVar(&file, "img", "", "image file path")
-	flag.StringVar(&fontFile, "font", "Monaco_Linux.ttf", "font file path")
+	flag.StringVar(&fontFile, "font", "", "font file path")
 	flag.StringVar(&output, "w", "", "output file,if not set , watermark prefix will add")
 	flag.Parse()
 	// 必须指定图片
-	if file == "" || fontFile == "" {
+	if file == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-	bf, err := ioutil.ReadFile(fontFile)
-	if err != nil {
-		log.Fatalf("读取字体文件 %s 失败", fontFile)
-	}
-	fontBuffer = bf
 	if output == "" {
 		output = fmt.Sprintf("watermark_%s", file)
+	}
+	if fontFile == "" {
+		bf, err := Asset("Monaco_Linux.ttf")
+		if err != nil {
+			log.Fatalf("去读默认字体 Monaco_Linux.ttf 失败,%s", err)
+		}
+		fontBuffer = bf
+	} else {
+		bf, err := ioutil.ReadFile(fontFile)
+		if err != nil {
+			log.Fatalf("读取字体文件 %s 失败", fontFile)
+		}
+		fontBuffer = bf
 	}
 }
 func main() {
