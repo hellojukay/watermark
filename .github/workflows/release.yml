@@ -1,0 +1,16 @@
+name: auto release
+on:
+    push:
+        branchs:
+            - v*
+
+
+jobs:
+    build:
+        name: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: go build
+              run: |
+                  go generate
+                  go build
