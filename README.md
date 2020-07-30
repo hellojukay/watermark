@@ -11,7 +11,7 @@ go generate && go build
 原图
 ![2020-07-19_071154.JPG](2020-07-19_071154.JPG)
 ```shell
-./watermark -img 2020-07-19_071154.JPG
+./watermark -i 2020-07-19_071154.JPG
 ```
 加上水印之后的图片
 ![watermark_2020-07-19_071154.JPG](watermark_2020-07-19_071154.JPG)
