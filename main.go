@@ -24,8 +24,8 @@ var output string
 var fontSize = 24
 
 func init() {
-	flag.StringVar(&file, "img", "", "image file path")
-	flag.StringVar(&fontFile, "font", "", "font file path")
+	flag.StringVar(&file, "i", "", "image file path")
+	flag.StringVar(&fontFile, "f", "", "font file path")
 	flag.StringVar(&output, "w", "", "output file,if not set , watermark prefix will add")
 	flag.Parse()
 	// 必须指定图片
