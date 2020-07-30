@@ -1,7 +1,7 @@
 name: auto release
 on:
     push:
-        branchs:
+        tags:
             - v*
 
 
@@ -25,6 +25,6 @@ jobs:
                   go generate
                   go build
             - name: upload file
-            - uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v2
               with:
                   path: watermark
