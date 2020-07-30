@@ -23,6 +23,6 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Build
-      run:
-          - go get -u github.com/jteeuwen/go-bindata/...
-          - go generate && go build -v .
+      run: |
+          go get -u github.com/jteeuwen/go-bindata/...
+          go generate && go build -v .
