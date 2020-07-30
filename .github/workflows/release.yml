@@ -25,6 +25,10 @@ jobs:
                   go generate
                   go build
             - name: upload file
-              uses: actions/upload-artifact@v2
+              uses: "marvinpinto/action-automatic-releases@latest"
               with:
-                  path: watermark
+                  repo_token: "${{ secrets.GITHUB_TOKEN }}"
+                  prerelease: false
+                  files: |
+                      watermark
+                      LICENSE
