@@ -21,7 +21,7 @@ var file string
 var fontFile string
 var fontBuffer []byte
 var output string
-var fontSize = 24
+var fontSize = 34
 
 func init() {
 	flag.StringVar(&file, "i", "", "image file path")
@@ -93,12 +93,12 @@ func main() {
 	}
 	f := freetype.NewContext()
 	f.SetFont(font)
-	f.SetDPI(350)
+	f.SetDPI(400)
 	f.SetFontSize(float64(fontSize))
 	f.SetClip(jpgimg.Bounds())
 	f.SetDst(img)
 	f.SetSrc(image.NewUniform(color.RGBA{R: 255, G: 0, B: 0, A: 255}))
-	pt := freetype.Pt(img.Bounds().Dx()-1400, img.Bounds().Dy()-24)
+	pt := freetype.Pt(img.Bounds().Dx()-2300, img.Bounds().Dy()-50)
 	_, err = f.DrawString(txt, pt)
 	// 保存到新的文件中
 	newfile, _ := os.Create(output)
@@ -108,7 +108,7 @@ func main() {
 		Quality: 100,
 	})
 	if err != nil {
-		log.Fatalf("保存水印文件%s失败%s", newfile, err)
+		log.Fatalf("保存水印文件%s失败%s", output, err)
 		os.Exit(1)
 	}
 }
