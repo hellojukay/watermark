@@ -67,11 +67,11 @@ func main() {
 	// 去读日期信息
 	v, err := x.Get("DateTimeOriginal")
 	if err != nil {
-		log.Fatalf("去读日期信息失败了", err)
+		log.Fatalf("照片%s读日期信息失败了,%s",fname, err)
 	}
 	t, err := time.Parse(`"2006:01:02"`, v.String())
 	if err != nil {
-		log.Fatalf("无法解析日期 %s\n", v.String())
+		log.Fatalf("照片%s无法解析日期 %s\n",fname, v.String())
 	}
 	var txt = t.Format("2006-01-02 15:04:05")
 	font, err := freetype.ParseFont(fontBuffer)
