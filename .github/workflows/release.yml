@@ -13,7 +13,7 @@ jobs:
             - name: Set up Go 1.x
               uses: actions/setup-go@v2
               with:
-                  go-version: ^1.13
+                  go-version: ^1.16
               id: go
 
             - name: Check out code into the Go module directory
@@ -21,8 +21,6 @@ jobs:
 
             - name: go build
               run: |
-                  go get -u github.com/jteeuwen/go-bindata/...
-                  go generate
                   go build
             - name: upload file
               uses: "marvinpinto/action-automatic-releases@latest"
