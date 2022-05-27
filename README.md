@@ -7,8 +7,7 @@
 
 # build
 ```shell
-go get -u github.com/jteeuwen/go-bindata/...
-go generate && go build
+go build
 ```
 
 原图

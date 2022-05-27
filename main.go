@@ -9,19 +9,25 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"time"
 
+	_ "embed"
 	"flag"
 
 	"github.com/golang/freetype"
 	"github.com/rwcarlsen/goexif/exif"
 )
 
-var file string
-var fontFile string
-var fontBuffer []byte
-var output string
-var fontSize = 34
+//go:embed Monaco_Linux.ttf
+var bf []byte
+var (
+	file       string
+	fontFile   string
+	fontBuffer []byte
+	output     string
+	fontSize   = 34
+)
 
 func init() {
 	flag.StringVar(&file, "i", "", "image file path")
@@ -33,14 +39,11 @@ func init() {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+	file = strings.TrimPrefix(file, "./")
 	if output == "" {
-		output = fmt.Sprintf("watermark_%s", file)
+		output = fmt.Sprintf("watermark_%s", strings.TrimPrefix(file, ".\\"))
 	}
 	if fontFile == "" {
-		bf, err := Asset("Monaco_Linux.ttf")
-		if err != nil {
-			log.Fatalf("去读默认字体 Monaco_Linux.ttf 失败,%s", err)
-		}
 		fontBuffer = bf
 	} else {
 		bf, err := ioutil.ReadFile(fontFile)
@@ -67,11 +70,11 @@ func main() {
 	// 去读日期信息
 	v, err := x.Get("DateTimeOriginal")
 	if err != nil {
-		log.Fatalf("照片%s读日期信息失败了,%s",fname, err)
+		log.Fatalf("照片%s读日期信息失败了,%s", fname, err)
 	}
-	t, err := time.Parse(`"2006:01:02"`, v.String())
+	t, err := time.Parse(`"2006:01:02 15:04:05"`, v.String())
 	if err != nil {
-		log.Fatalf("照片%s无法解析日期 %s\n",fname, v.String())
+		log.Fatalf("照片%s无法解析日期 %s\n", fname, v.String())
 	}
 	var txt = t.Format("2006-01-02 15:04:05")
 	font, err := freetype.ParseFont(fontBuffer)
@@ -100,6 +103,9 @@ func main() {
 	f.SetSrc(image.NewUniform(color.RGBA{R: 255, G: 0, B: 0, A: 255}))
 	pt := freetype.Pt(img.Bounds().Dx()-2300, img.Bounds().Dy()-50)
 	_, err = f.DrawString(txt, pt)
+	if err != nil {
+		log.Fatalf("写入水印失败 %s\n", err.Error())
+	}
 	// 保存到新的文件中
 	newfile, _ := os.Create(output)
 	defer newfile.Close()
